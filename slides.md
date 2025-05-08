@@ -27,9 +27,22 @@ mdc: true
 - **Relational Model & SQL** – algebra, DDL/DML, advanced queries  
 - **Implementation** – storage, indexing, transactions  
 - **Beyond Relational** – NoSQL, views, Redis, ORMs  
-- **Practice & Q‑A**  
 
 </v-clicks>
+
+---
+
+<br><br>
+
+Exam is closed-book, but you can bring 3 physical pages 8.5 x 11 (both sides) or a 6 page Google Doc 
+
+(You will submit this as a lab)
+
+
+<br>
+
+Section 1 Exam will be Tuesday May 13 at 4pm.
+
 
 ---
 layout: section
@@ -134,6 +147,25 @@ layout: section
 | **Total (Mandatory)**  | Minimum cardinality = **1** | Every entity must participate in the relationship (e.g., `NOT NULL` foreign key) |
 | **Partial (Optional)** | Minimum cardinality = **0** | Participation is optional; entity may or may not be involved (e.g., nullable FK) |
 
+---
+
+<br><br>
+
+
+Explain the purpose of a **foreign key constraint** in SQL.
+
+<br>
+
+
+<v-click>
+
+A foreign key constraint ensures that a column or set of columns in one table refers to a primary key in another table, maintaining **referential integrity** between the tables.
+
+</v-click>
+
+
+
+
 
 ---
 
@@ -151,6 +183,12 @@ What does this tell us? What kind of relationship is this?
 
 ![](/image2.png){width=200px lazy}
 
+
+<v-click>
+
+Many-to-one (N:1) relationship with optional participation on both sides.
+
+</v-click>
 
 ---
 
@@ -215,6 +253,92 @@ This means `dept_head` does not depend directly on the primary key, but on a non
 
 ---
 
+
+## Transitive dependency example:
+
+<br>
+
+```sql
+student(student_id, name, advisor_name, advisor_office)
+```
+<br>
+
+
+<v-click>
+
+If `advisor_office` depends on `advisor_name`, and `advisor_name` depends on `student_id`, that’s a transitive dependency.
+
+
+</v-click> 
+
+
+
+
+---
+
+## Normalization
+
+A good reason to normalize a schema is:
+
+(Choose one)
+
+- improved query performance
+- reduce redundancy
+- reduce number of tables
+
+<br>
+
+<v-click>
+
+answer is: "reduce redundancy"
+
+</v-click>
+
+
+---
+
+<br><br>
+
+Does this violate 1NF?
+
+```sql
+orders(order_id, customer_name, item_list)
+```
+
+<br>
+
+<v-click>
+
+Yes, `item_list` would likely contain a comma-separated list like "pen, notebook, eraser".
+
+
+</v-click>
+
+---
+
+<br><br>
+
+Explain the difference between Second Normal Form (2NF) and Third Normal Form (3NF).
+
+<br>
+
+
+<v-click>
+
+2NF removes **partial dependencies**: every non-key attribute must depend on the whole primary key (relevant in composite keys).
+
+</v-click>
+
+<v-click>
+
+3NF removes **transitive dependencies**: non-key attributes must only depend on the key, not on other non-key attributes.
+
+</v-click> 
+
+
+
+---
+
 ### Translating ER → Relational 
 
 <br>
@@ -257,6 +381,29 @@ layout: section
 
 ---
 
+<br><br>  
+
+A relational database contains:
+
+(Choose one)
+
+
+- at most one table
+- one or more tables
+
+<br>
+
+<v-click>
+
+Answer is "one or more tables"
+
+</v-click>
+
+
+
+---
+
+
 ### DDL – Creating Tables
 
 <br>
@@ -272,7 +419,7 @@ CREATE TABLE course (
 ```
 <br>
 
-> **Key Takeaway** Know effects of `ON DELETE CASCADE`.
+> What does `ON DELETE CASCADE` do?
 
 ---
 
@@ -294,7 +441,7 @@ WHERE    predicate;     -- 𝜎
 
 | Want… | Syntax |
 |-------|--------|
-| Pattern | `LIKE 'Sm%th'` |
+| Pattern | `LIKE '%help%'` |
 | Range | `BETWEEN 10 AND 20` |
 | NULL test | `IS NULL` |
 | Remove dupes | `DISTINCT` |
@@ -318,6 +465,55 @@ HAVING AVG(credits) > 3;
 
 
 </v-click>
+
+---
+
+<br>
+
+`WHERE`
+
+  - Filters rows before any grouping or aggregation happens.
+  - Can only be used with individual row values.
+  - Works in the `SELECT ... FROM ... WHERE ...` clause.
+
+
+<br>
+
+<v-click>
+
+
+`HAVING`
+- Filters groups after GROUP BY and aggregation.
+- Used to filter based on aggregate functions like COUNT(), AVG(), SUM().
+- Must be used with GROUP BY.
+
+
+</v-click>
+
+---
+
+## Examples
+
+<br>
+
+```sql
+SELECT * FROM Employees
+WHERE salary > 50000;
+```
+
+<br><br>
+
+<v-click>
+
+```sql
+SELECT dept, AVG(salary) AS avg_salary
+FROM Employees
+GROUP BY dept
+HAVING AVG(salary) > 60000;
+```
+
+</v-click>
+
 
 ---
 
@@ -365,21 +561,20 @@ LEFT JOIN orders o ON c.customer_id = o.customer_id;
 
 </v-click>
 
-
-
-
-
 ---
 
 
+<br><br>
 
-### Subqueries & CTEs – Quick Rules
+Explain the concept of a **correlated subquery**.
 
-<br>
+<v-click>
 
-1. `EXISTS` stops at first match – fast for big sets  
-2. Scalar subquery must return **one row, one col**  
-3. `WITH …` CTE improves readability; can be recursive
+- A correlated subquery is a subquery that references a column from the outer query. 
+- It is evaluated once for each row processed by the outer query.
+
+
+</v-click>
 
 ---
 
@@ -388,52 +583,26 @@ LEFT JOIN orders o ON c.customer_id = o.customer_id;
 -  Basic SELECT‑FROM‑WHERE template  
 - `GROUP BY` + `HAVING` for aggregates  
 - Join types & when to use Outer joins  
-- Subquery vs. CTE choice affects clarity/perf  
-- `EXPLAIN` is your friend
+
 
 ---
-
-### Typical Exam Items (SQL)
-
-- Write query: “Courses with zero students enrolled.”  
-- Convert RA expression to SQL.  
-- Explain difference between `IN` and `EXISTS`.
-
----
-
 layout: section
+---
+
 # Part 3  
 ## Implementation Details
 ---
 
 ### Storage 101
 
+<br>
+
 <v-clicks>
 
 - **Sequential I/O** – contiguous blocks → cheap  
 - **Random I/O** – seeks → costly on HDD, moderate on SSD  
-- **Exam‑critical 📝** Optimizer may still prefer Seq Scan for small tables (no seek).  
 
 </v-clicks>
-
----
-
-### Index Zoo
-
-| Index | Good For | Notes |
-|-------|----------|-------|
-| **B‑Tree** | equality & range | default |
-| **Hash** | equality only | rare in PG |
-| **GIN** | arrays / JSONB | inverted |
-| **GiST** | geo / full‑text | extensible |
-
----
-
-### Reading an `EXPLAIN ANALYZE`
-
-![plan placeholder](https://dummyimage.com/600x150/eeeeee/000000&text=plan+output+here "EXPLAIN plan") <!-- alt text for TTS -->
-
-> **Tip** Look at *rows vs. rows=* estimate, buffers hit, actual time.
 
 ---
 
@@ -450,6 +619,23 @@ layout: section
 
 ---
 
+<br><br>
+
+Briefly explain one potential anomaly that can occur in concurrent transactions without proper isolation.
+
+
+<v-click>
+
+**Answer:**
+
+A potential anomaly is a "dirty read," where a transaction reads data that has been written by another transaction but has not yet been committed. If the second transaction is later rolled back, the first transaction has read invalid data. Another is a "lost update," where two transactions try to update the same data, and one transaction's changes are overwritten by the other.
+
+
+</v-click>
+
+
+---
+
 ### Locks & Deadlocks
 
 <v-clicks>
@@ -462,25 +648,74 @@ layout: section
 
 ---
 
-### Implementation Section – Cheat Sheet
+## Indexes
 
-> 1️⃣ Sequential vs. Random I/O costs  
-> 2️⃣ B‑Tree default index ⇢ equality & range  
-> 3️⃣ Use `EXPLAIN ANALYZE` for timing  
-> 4️⃣ ACID ⇢ WAL assures D & A  
-> 5️⃣ Locks held to commit under Strict 2PL
+<br>
+
+What is the main purpose of an **index** in a database?
+
+<br>
+
+
+<v-click>
+
+An index is a data structure that improves the speed of data retrieval by providing a quick lookup mechanism to locate rows without scanning the entire table.
+
+</v-click> 
 
 ---
 
-### Typical Exam Items (Implementation)
+Given this query, what type of index would help most?
 
-- Interpret given `EXPLAIN ANALYZE` fragment.  
-- Choose index type for JSON search.  
-- Identify isolation level that allows “dirty read”.
+```sql
+SELECT * FROM Books WHERE price BETWEEN 10 AND 20;
+```
+
+<br>
+
+<v-click>
+
+A B-tree index would help most for this query.
+
+The query performs a range scan on the price column. B-tree indexes are ideal for:
+
+- Equality conditions (price = 15)
+- Range conditions (`BETWEEN`, <, >, <=, >=)
+- `ORDER BY` (if the sort matches the index order)
+
+</v-click>
+
+<br>
+
+<v-click>
+
+Hash indexes, in contrast:
+- Are optimized only for equality lookups
+- Cannot efficiently support range queries because hashing destroys order
+
+</v-click>
+
 
 ---
 
+Yes / No?
+
+Is a database index useful for the query 
+
+```sql
+SELECT * FROM instructor;
+```
+
+<v-click>
+
+Answer: no  (because for this query we need to scan the entire table)
+
+</v-click>
+
+---
 layout: section
+---
+
 # Part 4  
 ## Beyond Relational
 ---
@@ -497,38 +732,23 @@ layout: section
 
 ---
 
-### CAP Snapshot
 
-![cap](https://dummyimage.com/400x200/eeeeee/000000&text=CAP "CAP triangle")
+<br><br>
 
-> **Trade‑off example** MongoDB w/ majority write concern leans **CP**.
+What is sharding in the context of distributed databases like MongoDB?
 
----
 
-### MongoDB vs. JSONB Cheat Sheet
+<v-click>
 
-| Feature | MongoDB | PG JSONB |
-|---------|---------|----------|
-| Joins | `$lookup` | native |
-| Txn scope | multi‑doc | full |
-| Index path | multikey | GIN |
-| Best for | flexible docs | hybrid workloads |
+- Sharding is a horizontal partitioning technique that distributes data across multiple database instances or machines. 
+- It improves scalability and load distribution by having each shard hold a portion of the overall dataset.
+
+</v-click>
+
 
 ---
 
-### Views & Materialized Views
-
-<v-clicks>
-
-- View = virtual, always fresh  
-- Materialized = stored result  
-- `REFRESH … CONCURRENTLY` for non‑blocking reads  
-
-</v-clicks>
-
----
-
-### Redis – 60‑Second Tour
+### Redis
 
 <v-clicks>
 
@@ -550,40 +770,8 @@ layout: section
 
 ### Beyond Section – Key Takeaways
 
-> 1️⃣ CAP ⇒ can’t have CA P at once  
-> 2️⃣ Mongo vs. JSONB = doc store vs. extensible column  
-> 3️⃣ Materialized view trades freshness for speed  
-> 4️⃣ Redis = RAM speed, watch memory footprint  
-> 5️⃣ ORMs safe, but watch N+1
-
----
-
-### Typical Exam Items (Beyond)
-
-- State CAP theorem; classify Redis.  
-- Compare `$lookup` to SQL `JOIN`.  
-- Explain benefit of materialized view + example.
-
----
-
-layout: section
-# Practice & Q ± A
----
-
-### Hands‑On Tasks
-
-1. **ER Drawing** – dorm‑room schema  
-2. **Normalize** `in_dept` to BCNF  
-3. **Write** CTE calculating avg credits per dept (>3)  
-4. **Interpret** provided `EXPLAIN ANALYZE` plan
-
-(To be solved live / in breakout groups.)
-
----
-
-layout: center
-# Still Unclear?
-
-*Parking‑lot slide* – jot your lingering questions here so we can tackle them.
-
----
+- CAP ⇒ can’t have CA P at once  
+- Mongo vs. JSONB = doc store vs. extensible column  
+- Materialized view trades freshness for speed  
+- Redis = RAM speed, watch memory footprint  
+- ORMs safe, but watch N+1
