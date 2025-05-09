@@ -41,7 +41,7 @@ Exam is closed-book, but you can bring 3 physical pages 8.5 x 11 (both sides) or
 
 <br>
 
-Section 1 Exam will be Tuesday May 13 at 4pm.
+Section 2 Exam will be Tuesday May 13 at 4pm.
 
 
 ---
@@ -97,7 +97,7 @@ layout: section
 | Multi‑valued | `phone {...}` | becomes new table |
 | Nullable | `middle_name` | may be `NULL` |
 
----
+--- 
 
 ### ER Modeling – Relationships
 
@@ -578,7 +578,16 @@ Explain the concept of a **correlated subquery**.
 
 ---
 
+### DML
+
+![](/dml2.png){width=500px lazy}
+
+---
+
+
 ### SQL Section – Key Takeaways
+
+<br>
 
 -  Basic SELECT‑FROM‑WHERE template  
 - `GROUP BY` + `HAVING` for aggregates  
@@ -604,6 +613,18 @@ layout: section
 
 </v-clicks>
 
+
+<v-click>
+
+
+![](/hdd_vs_ssd_bz.png){width=500px lazy}
+
+
+
+
+
+</v-click>
+
 ---
 
 ### ACID & Concurrency
@@ -615,7 +636,9 @@ layout: section
 | Isolation | concurrent ≈ serial |
 | Durability | survives crash |
 
-> PostgreSQL uses **WAL** + **MVCC**.
+<br>
+
+> PostgreSQL uses write ahead logging (WAL) + multi-version concurrency control (MVCC).
 
 ---
 
@@ -623,12 +646,15 @@ layout: section
 
 Briefly explain one potential anomaly that can occur in concurrent transactions without proper isolation.
 
+<br>
 
 <v-click>
 
 **Answer:**
 
-A potential anomaly is a "dirty read," where a transaction reads data that has been written by another transaction but has not yet been committed. If the second transaction is later rolled back, the first transaction has read invalid data. Another is a "lost update," where two transactions try to update the same data, and one transaction's changes are overwritten by the other.
+- A potential anomaly is a "dirty read," where a transaction reads data that has been written by another transaction but has not yet been committed. If the second transaction is later rolled back, the first transaction has read invalid data. 
+
+- Another is a "lost update," where two transactions try to update the same data, and one transaction's changes are overwritten by the other.
 
 
 </v-click>
@@ -638,10 +664,12 @@ A potential anomaly is a "dirty read," where a transaction reads data that has b
 
 ### Locks & Deadlocks
 
+<br>
+
 <v-clicks>
 
 - S (Shared) vs. X (Exclusive)  
-- **Strict 2PL** – release after commit  
+- **Strict 2PL** (Two Phase Locking) – release after commit  
 - Deadlock detection via waits‑for graph  
 
 </v-clicks>
@@ -659,6 +687,8 @@ What is the main purpose of an **index** in a database?
 
 <v-click>
 
+**Answer:**
+
 An index is a data structure that improves the speed of data retrieval by providing a quick lookup mechanism to locate rows without scanning the entire table.
 
 </v-click> 
@@ -671,11 +701,12 @@ Given this query, what type of index would help most?
 SELECT * FROM Books WHERE price BETWEEN 10 AND 20;
 ```
 
-<br>
 
 <v-click>
 
-A B-tree index would help most for this query.
+**Answer:**
+
+A **B-tree** index would help most for this query.
 
 The query performs a range scan on the price column. B-tree indexes are ideal for:
 
@@ -689,7 +720,7 @@ The query performs a range scan on the price column. B-tree indexes are ideal fo
 
 <v-click>
 
-Hash indexes, in contrast:
+**Hash** indexes, in contrast:
 - Are optimized only for equality lookups
 - Cannot efficiently support range queries because hashing destroys order
 
@@ -706,9 +737,11 @@ Is a database index useful for the query
 SELECT * FROM instructor;
 ```
 
+<br>
+
 <v-click>
 
-Answer: no  (because for this query we need to scan the entire table)
+**Answer:** no  (because for this query we need to scan the entire table)
 
 </v-click>
 
@@ -722,13 +755,22 @@ layout: section
 
 ### NoSQL Motivation
 
+<br>
+
 <v-clicks>
 
 - Massive scale / flexible schema  
 - High availability under partitions  
-- Schema‑on‑read vs. schema‑on‑write  
 
 </v-clicks>
+
+
+<v-click>
+
+![](/distrib.png){width=600px lazy}
+
+</v-click>
+
 
 ---
 
@@ -750,6 +792,8 @@ What is sharding in the context of distributed databases like MongoDB?
 
 ### Redis
 
+<br>
+
 <v-clicks>
 
 - In‑memory ➜ µs latency  
@@ -759,19 +803,43 @@ What is sharding in the context of distributed databases like MongoDB?
 
 </v-clicks>
 
+<v-click>
+
+![](/Key-Value-Store.webp){width=400px lazy}
+
+</v-click>
+
 ---
 
 ### ORMs & The N + 1
 
-> **Problem** one parent row triggers N child queries.  
-> **Fix** eager loading (`joinedload`, `selectinload`) *or* explicit joins.
+<br>
+
+<v-clicks>
+
+-  **Problem** one parent row triggers N child queries.  
+- **Fix** eager loading use `selectinload`
+
+</v-clicks>
+
+<v-click>
+
+![](/orm2.png){width=500px lazy}
+
+</v-click>
 
 ---
 
 ### Beyond Section – Key Takeaways
 
-- CAP ⇒ can’t have CA P at once  
+<br>
+
+
+<v-clicks>
+
+- CAP ⇒ can’t have CA and P at once  
 - Mongo vs. JSONB = doc store vs. extensible column  
-- Materialized view trades freshness for speed  
 - Redis = RAM speed, watch memory footprint  
 - ORMs safe, but watch N+1
+
+</v-clicks>
