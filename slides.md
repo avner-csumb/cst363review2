@@ -1,10 +1,9 @@
 ---
-# theme: seriph
+theme: seriph
 title: Databases — Comprehensive Review
 class: text-center
 info: |
   CST 363 • Spring 2025  
-  Slidev version of the end‑of‑term review
 drawings:
   persist: false
 mdc: true
@@ -17,22 +16,35 @@ mdc: true
 
 ---
 
-## Session Road‑Map
+## Session Roadmap
 
 <br>
 
 <v-clicks>
 
-- **Design** – ER modeling → normalization  
-- **Relational Model & SQL** – algebra, DDL/DML, advanced queries  
+- **Design** – ER modeling → normalization
+
+- **Relational Model & SQL** – Relational algebra, DDL/DML, advanced queries  
+
 - **Implementation** – storage, indexing, transactions  
-- **Beyond Relational** – NoSQL, views, Redis, ORMs  
+
+- **Beyond Relational \& Abstraction Layers** – NoSQL, Redis, ORMs  
 
 </v-clicks>
 
+<br>
+
+<v-click>
+
+![](/abstract.png){class="w-50 mx-auto"}
+
+</v-click>
+
 ---
 
-<br><br>
+## Administrivia 
+
+<br>
 
 Exam is closed-book, but you can bring 3 physical pages 8.5 x 11 (both sides) or a 6 page Google Doc 
 
@@ -41,8 +53,13 @@ Exam is closed-book, but you can bring 3 physical pages 8.5 x 11 (both sides) or
 
 <br>
 
+Section 1 Exam will be Wednesday May 14 at 4pm.
+
 Section 2 Exam will be Tuesday May 13 at 4pm.
 
+<br>
+
+![](/books.png){class="w-30 float-right"}
 
 ---
 layout: section
@@ -61,7 +78,7 @@ layout: section
 - Hard to change schema later  
 - Prevent redundancy & anomalies  
 - Align with *real‑world* requirements  
-- **Key Takeaway** Poor design ⇒ insert/update/delete anomalies  
+- **Key Takeaway** Poor design ⇒ insert / update / delete anomalies  
 
 </v-clicks>
 
@@ -80,7 +97,7 @@ layout: section
 
 <v-click>
 
-> **Key Takeaway**  Remember: entity **set** becomes a table name.
+> **Key Takeaway**  Remember: entity **set** becomes a table name
 
 </v-click>
 
@@ -106,8 +123,11 @@ layout: section
 <v-clicks>
 
 - **Relationship** = association (e.g., `advises`)  
+
 - **Relationship set** = all occurrences  
+
 - Each relationship has **roles** (advisor, advisee)  
+
 
 </v-clicks>
 
@@ -120,14 +140,21 @@ layout: section
 
 | Cardinality | Example |
 |-------------|---------|
-| **1 : 1** | `id_card–student` |
-| **1 : n** | `advisor–student` |
-| **m : n** | `student–course (takes)` |
+| **1 : 1** | `id_card – student` |
+| **1 : n** | `advisor – student` |
+| **m : n** | `student – course (takes)` |
 
 
 <br>
 
+
+<v-click>
+
 > Which cardinality fits “A room can host many meetings; a meeting uses exactly one room”?  
+
+</v-click>
+
+<br>
 
 <v-click>
 
@@ -151,6 +178,7 @@ layout: section
 
 <br><br>
 
+**Question:**
 
 Explain the purpose of a **foreign key constraint** in SQL.
 
@@ -159,17 +187,18 @@ Explain the purpose of a **foreign key constraint** in SQL.
 
 <v-click>
 
+**Answer:**
+
 A foreign key constraint ensures that a column or set of columns in one table refers to a primary key in another table, maintaining **referential integrity** between the tables.
 
 </v-click>
 
 
-
-
-
 ---
 
-![](/crows_foot.png){width=600px lazy}
+## Crow's Foot Notation
+
+![](/crows_foot.png){class="w-140 mx-auto"}
 
 
 
@@ -179,12 +208,12 @@ A foreign key constraint ensures that a column or set of columns in one table re
 
 What does this tell us? What kind of relationship is this?
 
-<br>
-
-![](/image2.png){width=200px lazy}
+![](/image2.png){class="w-50 mx-auto"}
 
 
 <v-click>
+
+**Answer:**
 
 Many-to-one (N:1) relationship with optional participation on both sides.
 
@@ -271,12 +300,13 @@ If `advisor_office` depends on `advisor_name`, and `advisor_name` depends on `st
 
 </v-click> 
 
-
-
-
 ---
 
 ## Normalization
+
+<br>
+
+**Question:** 
 
 A good reason to normalize a schema is:
 
@@ -290,7 +320,9 @@ A good reason to normalize a schema is:
 
 <v-click>
 
-answer is: "reduce redundancy"
+**Answer:** 
+
+"reduce redundancy"
 
 </v-click>
 
@@ -298,6 +330,8 @@ answer is: "reduce redundancy"
 ---
 
 <br><br>
+
+**Question:** 
 
 Does this violate 1NF?
 
@@ -309,6 +343,8 @@ orders(order_id, customer_name, item_list)
 
 <v-click>
 
+**Answer:** 
+
 Yes, `item_list` would likely contain a comma-separated list like "pen, notebook, eraser".
 
 
@@ -318,6 +354,8 @@ Yes, `item_list` would likely contain a comma-separated list like "pen, notebook
 
 <br><br>
 
+**Question:** 
+
 Explain the difference between Second Normal Form (2NF) and Third Normal Form (3NF).
 
 <br>
@@ -325,11 +363,11 @@ Explain the difference between Second Normal Form (2NF) and Third Normal Form (3
 
 <v-click>
 
+**Answer:** 
+
 2NF removes **partial dependencies**: every non-key attribute must depend on the whole primary key (relevant in composite keys).
 
-</v-click>
 
-<v-click>
 
 3NF removes **transitive dependencies**: non-key attributes must only depend on the key, not on other non-key attributes.
 
@@ -345,10 +383,15 @@ Explain the difference between Second Normal Form (2NF) and Third Normal Form (3
 
 
 1. Entity set → table with PK  
-2. 1 : n relationship → FK on “n” side  
-3. m : n relationship → **junction table**  
+
+2. `1 : n` relationship → FK on "n" side  
+
+3. `m : n` relationship → **junction table**  
+
 4. Multi‑valued attribute → separate table  
+
 5. Composite attribute → separate columns
+
 
 ---
 
@@ -357,8 +400,10 @@ Explain the difference between Second Normal Form (2NF) and Third Normal Form (3
 <br>  
 
 1.  Entities & attributes → tables & columns  
+
 2.  Cardinality drives FK placement  
-4.  FD ⇒ Normal forms ⇒ no anomalies  
+
+3.  FD ⇒ Normal forms ⇒ no anomalies  
 
 ---
 layout: section
@@ -379,9 +424,28 @@ layout: section
 
 > **Important** Relational Algebra treats relations as **sets** → duplicates eliminated.
 
+
+
+---
+
+### Basic `SELECT` Template
+
+<br><br>
+
+```sql
+SELECT   cols           -- 𝜋
+FROM     tables         -- source
+WHERE    predicate;     -- 𝜎
+```
+
+
+
+
 ---
 
 <br><br>  
+
+**Question:** 
 
 A relational database contains:
 
@@ -395,7 +459,9 @@ A relational database contains:
 
 <v-click>
 
-Answer is "one or more tables"
+**Answer:**
+
+"one or more tables"
 
 </v-click>
 
@@ -404,7 +470,7 @@ Answer is "one or more tables"
 ---
 
 
-### DDL – Creating Tables
+### Data Definition Language (DDL) – Creating Tables
 
 <br>
 
@@ -421,19 +487,18 @@ CREATE TABLE course (
 
 > What does `ON DELETE CASCADE` do?
 
----
-
-### Basic SELECT Template
-
 <br>
 
-```sql
-SELECT   cols           -- 𝜋
-FROM     tables         -- source
-WHERE    predicate;     -- 𝜎
-```
+<v-click>
+
+**Answer:** 
+
+It means that if a referenced row in the department table is deleted, all course rows with that `dept_id` will be automatically deleted too.
+
+</v-click>
 
 ---
+
 
 ### Filtering 
 
@@ -459,9 +524,11 @@ GROUP  BY dept_id
 HAVING AVG(credits) > 3;
 ```
 
+<br>
+
 <v-click>
 
-**WHERE vs. HAVING** – row filter vs. group filter
+`WHERE` vs. `HAVING` --- row filter vs. group filter
 
 
 </v-click>
@@ -483,6 +550,7 @@ HAVING AVG(credits) > 3;
 
 
 `HAVING`
+
 - Filters groups after GROUP BY and aggregation.
 - Used to filter based on aggregate functions like COUNT(), AVG(), SUM().
 - Must be used with GROUP BY.
@@ -496,6 +564,9 @@ HAVING AVG(credits) > 3;
 
 <br>
 
+
+`WHERE`
+
 ```sql
 SELECT * FROM Employees
 WHERE salary > 50000;
@@ -504,6 +575,8 @@ WHERE salary > 50000;
 <br><br>
 
 <v-click>
+
+`HAVING`
 
 ```sql
 SELECT dept, AVG(salary) AS avg_salary
@@ -519,6 +592,8 @@ HAVING AVG(salary) > 60000;
 
 ### Joins Recap
 
+<br>
+
 ```sql
 SELECT s.name, c.title
 FROM   student s
@@ -528,11 +603,13 @@ JOIN   course  c ON c.id = t.cid;
 
 <br>
 
-> Which join keeps *all left rows even if no match?* (answer next click)
+> Which join keeps *all left rows even if no match?* 
+
+<br>
 
 <v-click>
 
-Answer: **LEFT OUTER JOIN**
+Answer: `LEFT OUTER JOIN`
 
 </v-click>
 
@@ -540,18 +617,21 @@ Answer: **LEFT OUTER JOIN**
 
 <br>
 
+
+**Question:** 
+
+For the following schema, write a SQL query  to list all customers and their orders, **even if the customer has no orders.**
+
 ```sql
 customers(customer_id, name)
 orders(order_id, customer_id, total_amount)
 ```
 
-Write a SQL query to list all customers and their orders, **even if the customer has no orders.**
-
-
 <br>
 
 <v-click>
-Sample answer:
+
+**Answer:**
 
 ```sql
 SELECT c.customer_id, c.name, o.order_id, o.total_amount
@@ -566,11 +646,19 @@ LEFT JOIN orders o ON c.customer_id = o.customer_id;
 
 <br><br>
 
+**Question:** 
+
 Explain the concept of a **correlated subquery**.
+
+
+<br>
 
 <v-click>
 
+**Answer:**
+
 - A correlated subquery is a subquery that references a column from the outer query. 
+
 - It is evaluated once for each row processed by the outer query.
 
 
@@ -578,7 +666,7 @@ Explain the concept of a **correlated subquery**.
 
 ---
 
-### DML
+### Data Manipulation Language (DML)
 
 ![](/dml2.png){width=500px lazy}
 
@@ -589,9 +677,11 @@ Explain the concept of a **correlated subquery**.
 
 <br>
 
--  Basic SELECT‑FROM‑WHERE template  
+-  Basic `SELECT`‑`FROM`‑`WHERE` template  
+
 - `GROUP BY` + `HAVING` for aggregates  
-- Join types & when to use Outer joins  
+
+- Join types & when to use outer joins  
 
 
 ---
@@ -609,25 +699,100 @@ layout: section
 <v-clicks>
 
 - **Sequential I/O** – contiguous blocks → cheap  
+
 - **Random I/O** – seeks → costly on HDD, moderate on SSD  
 
 </v-clicks>
 
 
+<br>
+
 <v-click>
 
-
-![](/hdd_vs_ssd_bz.png){width=500px lazy}
-
-
-
-
+![](/hdd_vs_ssd_bz.png){class="w-80 mx-auto"}
 
 </v-click>
 
 ---
 
+## Indexes
+
+<br>
+
+**Question:** 
+
+What is the main purpose of an **index** in a database?
+
+<br>
+
+
+<v-click>
+
+**Answer:**
+
+An index is a data structure that improves the speed of data retrieval by providing a quick lookup mechanism to locate rows without scanning the entire table.
+
+</v-click> 
+
+---
+
+**Question:** 
+
+Given this query, what type of index would help most?
+
+```sql
+SELECT * FROM Books WHERE price BETWEEN 10 AND 20;
+```
+
+
+<v-click>
+
+**Answer:**
+
+A **B-tree** index would help most for this query. The query performs a range scan on the price column. 
+
+B-tree indexes are ideal for:
+- Equality conditions (price = 15)
+- Range conditions (`BETWEEN`, <, >, <=, >=)
+- `ORDER BY` (if the sort matches the index order)
+
+</v-click>
+
+<v-click>
+
+**Hash** indexes are optimized only for equality lookups --- cannot efficiently support range queries because hashing destroys order
+
+</v-click>
+
+
+---
+
+**Question:** 
+
+Yes / No?
+
+Is a database index useful for the query 
+
+```sql
+SELECT * FROM instructor;
+```
+
+<br>
+
+<v-click>
+
+**Answer:** 
+
+No  (because for this query we need to scan the entire table)
+
+</v-click>
+
+---
+
+
 ### ACID & Concurrency
+
+<br>
 
 | Property | Guarantee |
 |----------|-----------|
@@ -643,6 +808,8 @@ layout: section
 ---
 
 <br><br>
+
+**Question:** 
 
 Briefly explain one potential anomaly that can occur in concurrent transactions without proper isolation.
 
@@ -674,76 +841,7 @@ Briefly explain one potential anomaly that can occur in concurrent transactions 
 
 </v-clicks>
 
----
 
-## Indexes
-
-<br>
-
-What is the main purpose of an **index** in a database?
-
-<br>
-
-
-<v-click>
-
-**Answer:**
-
-An index is a data structure that improves the speed of data retrieval by providing a quick lookup mechanism to locate rows without scanning the entire table.
-
-</v-click> 
-
----
-
-Given this query, what type of index would help most?
-
-```sql
-SELECT * FROM Books WHERE price BETWEEN 10 AND 20;
-```
-
-
-<v-click>
-
-**Answer:**
-
-A **B-tree** index would help most for this query.
-
-The query performs a range scan on the price column. B-tree indexes are ideal for:
-
-- Equality conditions (price = 15)
-- Range conditions (`BETWEEN`, <, >, <=, >=)
-- `ORDER BY` (if the sort matches the index order)
-
-</v-click>
-
-<br>
-
-<v-click>
-
-**Hash** indexes, in contrast:
-- Are optimized only for equality lookups
-- Cannot efficiently support range queries because hashing destroys order
-
-</v-click>
-
-
----
-
-Yes / No?
-
-Is a database index useful for the query 
-
-```sql
-SELECT * FROM instructor;
-```
-
-<br>
-
-<v-click>
-
-**Answer:** no  (because for this query we need to scan the entire table)
-
-</v-click>
 
 ---
 layout: section
@@ -767,7 +865,7 @@ layout: section
 
 <v-click>
 
-![](/distrib.png){width=600px lazy}
+![](/distrib.png){class="w-150 mx-auto"}
 
 </v-click>
 
@@ -777,10 +875,16 @@ layout: section
 
 <br><br>
 
+**Question:** 
+
+
 What is sharding in the context of distributed databases like MongoDB?
 
 
 <v-click>
+
+**Answer:**
+
 
 - Sharding is a horizontal partitioning technique that distributes data across multiple database instances or machines. 
 - It improves scalability and load distribution by having each shard hold a portion of the overall dataset.
@@ -790,41 +894,55 @@ What is sharding in the context of distributed databases like MongoDB?
 
 ---
 
+### CAP Theorem
+
+
+![](/cap.png){class="w-110 mx-auto"}
+
+---
+
 ### Redis
 
 <br>
 
 <v-clicks>
 
-- In‑memory ➜ µs latency  
-- Data structures: String, Hash, List, Set, ZSet  
-- Persistence: RDB snapshot or AOF log  
+- In‑memory → µs latency  
+- Data structures: String, Hash, List, Set, ZSet (sorted set)
+- Persistence: Redis DB (RDB) snapshot or Append-Only File (AOF) log  
 - Use cases: cache, session, Pub/Sub  
 
 </v-clicks>
 
+
 <v-click>
 
-![](/Key-Value-Store.webp){width=400px lazy}
+
+![](/Key-Value-Store.webp){class="w-70 mx-auto"}
 
 </v-click>
 
 ---
 
-### ORMs & The N + 1
+### Obect Relational Mappers & The N + 1
 
 <br>
 
 <v-clicks>
 
--  **Problem** one parent row triggers N child queries.  
-- **Fix** eager loading use `selectinload`
+Benefits:
+- Productivity – write Python / Java classes instead of repetitive SQL; less boilerplate, faster development
+- Simplifies joins – use object relationships (`user.comments`) instead of manual foreign key joins
+
+"N+1"
+- **Problem** one parent row triggers N child queries.  
+- **Fix** *eager* loading using `selectinload`
 
 </v-clicks>
 
 <v-click>
 
-![](/orm2.png){width=500px lazy}
+![](/orm2.png){class="w-70 mx-auto"}
 
 </v-click>
 
@@ -837,9 +955,16 @@ What is sharding in the context of distributed databases like MongoDB?
 
 <v-clicks>
 
-- CAP ⇒ can’t have CA and P at once  
+- CAP ⇒ can't have CA and P at once  
 - Mongo vs. JSONB = doc store vs. extensible column  
 - Redis = RAM speed, watch memory footprint  
 - ORMs safe, but watch N+1
 
 </v-clicks>
+
+---
+layout: center
+---
+
+
+![](/thankyou.png){class="w-90"}
